@@ -6,7 +6,7 @@
 /*   By: trazanad <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/22 20:39:16 by trazanad          #+#    #+#             */
-/*   Updated: 2024/05/22 22:21:56 by trazanad         ###   ########.fr       */
+/*   Updated: 2024/05/23 00:25:05 by trazanad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,11 +23,12 @@ void	send_character(pid_t server_pid, char character)
 		i--;
 		tmp = character >> i;
 		if (tmp % 2 == 0)
-			write(1, "0",1);//send 0
+			kill(server_pid, SIGUSR1);// write(1, "0",1);//send 0
 		else
-			write(1, "1",1);//send 1
-		usleep(42);//change value
+			kill(server_pid, SIGUSR2);// write(1, "1",1);//send 1
+		usleep(100);//change value
 	}
+		usleep(100);//change value
 }
 
 void	send_msg(pid_t server_pid, char *msg)
@@ -38,9 +39,8 @@ void	send_msg(pid_t server_pid, char *msg)
 	while (msg[i])
 	{
 		send_character(server_pid, msg[i]);
-		write(1, "\n",1);//
 		i++;
-		usleep(50);//can we take it
+		// usleep();//can we take it
 	}
 	send_character(server_pid, '\0');//msg end
 }
@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
 	if (server_pid <= 0)
 		exit(EXIT_FAILURE);
 	// printf("Ready to send msg (%s) to %d",argv[2], server_pid);//
-	//send_msg
+	//send_msg 4386
 	send_msg(server_pid, argv[2]);
 	return (0);
 }
