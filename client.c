@@ -6,11 +6,27 @@
 /*   By: trazanad <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/22 20:39:16 by trazanad          #+#    #+#             */
-/*   Updated: 2024/05/23 00:25:05 by trazanad         ###   ########.fr       */
+/*   Updated: 2024/05/23 09:05:58 by trazanad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
+
+void    send_signal(pid_t server_pid, int signum)
+{
+    int res;
+
+    res = -1;
+    if (signum == SIGUSR1)
+		res = kill(server_pid, SIGUSR1);
+    if (signum == SIGUSR2)
+		res = kill(server_pid, SIGUSR2);
+    if (res < 0)
+    {
+        write(1, "Error occured when sending signals!",35);
+        exit(EXIT_FAILURE);
+    }
+}
 
 void	send_character(pid_t server_pid, char character)
 {
@@ -23,12 +39,11 @@ void	send_character(pid_t server_pid, char character)
 		i--;
 		tmp = character >> i;
 		if (tmp % 2 == 0)
-			kill(server_pid, SIGUSR1);// write(1, "0",1);//send 0
+			send_signal(server_pid, SIGUSR1);
 		else
-			kill(server_pid, SIGUSR2);// write(1, "1",1);//send 1
-		usleep(100);//change value
+			send_signal(server_pid, SIGUSR2);
+		usleep(100);
 	}
-		usleep(100);//change value
 }
 
 void	send_msg(pid_t server_pid, char *msg)
@@ -40,7 +55,6 @@ void	send_msg(pid_t server_pid, char *msg)
 	{
 		send_character(server_pid, msg[i]);
 		i++;
-		// usleep();//can we take it
 	}
 	send_character(server_pid, '\0');//msg end
 }
@@ -50,12 +64,16 @@ int main(int argc, char *argv[])
 	pid_t server_pid;
 	
 	if (argc != 3)
-		exit(EXIT_FAILURE);
+	{
+        write(1, "Error invalid number of argument!",33);
+        exit(EXIT_FAILURE);
+    }
 	server_pid = atoi(argv[1]);
 	if (server_pid <= 0)
-		exit(EXIT_FAILURE);
-	// printf("Ready to send msg (%s) to %d",argv[2], server_pid);//
-	//send_msg 4386
+	{
+        write(1, "Error invalid pid!", 18);
+        exit(EXIT_FAILURE);
+    }
 	send_msg(server_pid, argv[2]);
 	return (0);
 }
