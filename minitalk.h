@@ -6,7 +6,7 @@
 /*   By: trazanad <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/22 20:43:25 by trazanad          #+#    #+#             */
-/*   Updated: 2024/05/22 20:54:14 by trazanad         ###   ########.fr       */
+/*   Updated: 2024/05/23 14:05:33 by trazanad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,5 +23,11 @@
 # include <unistd.h>
 
 # include <string.h>//
+
+typedef struct s_list
+{
+	int				content;
+	struct s_list	*next;
+}	t_list;
 
 #endif

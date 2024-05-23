@@ -6,7 +6,7 @@
 /*   By: trazanad <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/22 20:50:20 by trazanad          #+#    #+#             */
-/*   Updated: 2024/05/23 09:41:05 by trazanad         ###   ########.fr       */
+/*   Updated: 2024/05/23 10:10:43 by trazanad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,21 +16,28 @@ void handle_sigusr(int signum, siginfo_t *info, void *context)
 {
 	static unsigned int i = 8;
 	static unsigned char character = 0;
-	unsigned char tmp;
-
-	tmp = 1;
-	if (i > 0)
-	{
-		i--;
-		if (signum == SIGUSR2)
-			character |= tmp << i; 
-	}
-	if (i == 0)
-	{
-		write(1,&character,1);
-		i = 8;
-		character = 0;
-	}
+	
+    (void)context;
+    if (info->si_pid > 0)
+    {
+        if (signum != SIGUSR1 && signum != SIGUSR2)
+        {
+            write (1, "Error invalid signal from client!", 33);
+            exit(EXIT_FAILURE);
+        }
+	    if (i > 0)
+	    {
+	    	i--;
+	    	if (signum == SIGUSR2)
+	    		character |= 1 << i; 
+	    }
+	    if (i == 0)
+	    {
+	    	write(1,&character,1);
+	    	i = 8;
+	    	character = 0;
+	    }
+    }
 }
 
 //handle sa with 
