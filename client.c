@@ -6,7 +6,7 @@
 /*   By: trazanad <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/22 20:39:16 by trazanad          #+#    #+#             */
-/*   Updated: 2024/05/23 10:00:53 by trazanad         ###   ########.fr       */
+/*   Updated: 2024/05/24 10:52:47 by trazanad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ void	send_character(pid_t server_pid, char character)
 			send_signal(server_pid, SIGUSR1);
 		else
 			send_signal(server_pid, SIGUSR2);
-		usleep(100);
+		usleep(42);
 	}
 }
 

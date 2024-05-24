@@ -6,16 +6,29 @@
 /*   By: trazanad <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/22 20:50:20 by trazanad          #+#    #+#             */
-/*   Updated: 2024/05/23 10:10:43 by trazanad         ###   ########.fr       */
+/*   Updated: 2024/05/24 10:54:50 by trazanad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
 
+void print(t_list *list)
+{
+    char c;
+
+    while (list)
+    {
+        c = list->content;
+        write(1,&c,1);
+        list = list->next;
+    }
+    ft_lstclear(&list);
+}
 void handle_sigusr(int signum, siginfo_t *info, void *context)
 {
 	static unsigned int i = 8;
 	static unsigned char character = 0;
+    static t_list *list = 0;
 	
     (void)context;
     if (info->si_pid > 0)
@@ -33,7 +46,10 @@ void handle_sigusr(int signum, siginfo_t *info, void *context)
 	    }
 	    if (i == 0)
 	    {
-	    	write(1,&character,1);
+	    	// write(1,&character,1);
+            ft_lstadd_back(&list, ft_lstnew(character));
+            if (character == 0)
+            print(list);
 	    	i = 8;
 	    	character = 0;
 	    }
@@ -61,5 +77,5 @@ int main(int argc, char *argv[])
         exit(EXIT_FAILURE);
     }
 	while(1);
-	return (0);
+    return (0);
 }

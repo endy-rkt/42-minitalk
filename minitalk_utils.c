@@ -6,7 +6,7 @@
 /*   By: trazanad <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/23 13:54:13 by trazanad          #+#    #+#             */
-/*   Updated: 2024/05/23 13:55:17 by trazanad         ###   ########.fr       */
+/*   Updated: 2024/05/24 10:18:16 by trazanad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ int	ft_count_len(char *s)
 
 void	ft_putstr_fd(char *s, int fd)
 {
-	if (fd > -1 && ft_strlen(s) > 0)
+	if (fd > -1 && ft_count_len(s) > 0)
 		write(fd, s, ft_count_len(s));
 }
 
