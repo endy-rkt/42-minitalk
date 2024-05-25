@@ -6,7 +6,7 @@
 /*   By: trazanad <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/22 20:39:16 by trazanad          #+#    #+#             */
-/*   Updated: 2024/05/24 10:52:47 by trazanad         ###   ########.fr       */
+/*   Updated: 2024/05/26 01:27:11 by trazanad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,8 @@ void	send_character(pid_t server_pid, char character)
 			send_signal(server_pid, SIGUSR1);
 		else
 			send_signal(server_pid, SIGUSR2);
-		usleep(42);
+		pause();
+		usleep(100);
 	}
 }
 
@@ -54,14 +55,26 @@ void	send_msg(pid_t server_pid, char *msg)
 	while (msg[i])
 	{
 		send_character(server_pid, msg[i]);
+		usleep(100);
 		i++;
 	}
 	send_character(server_pid, '\0');//msg end
 }
 
+void handle_sigusr(int signum, siginfo_t *info, void *context)
+{
+	(void)context;
+		if (signum ==  SIGUSR1 || signum == SIGUSR2)
+		{
+			ft_putnbr_fd(signum ,1);
+			write(1,"\n",1);
+		}
+}
+
 int main(int argc, char *argv[])
 {
 	pid_t server_pid;
+	struct sigaction sa;
 	
 	if (argc != 3)
 	{
@@ -72,6 +85,14 @@ int main(int argc, char *argv[])
 	if (server_pid <= 0)
 	{
         write(1, "Error invalid pid!", 18);
+        exit(EXIT_FAILURE);
+    }
+	sigemptyset(&sa.sa_mask);
+	sa.sa_flags = SA_SIGINFO;
+	sa.sa_sigaction = &handle_sigusr;
+    if (sigaction(SIGUSR1, &sa, NULL) < 0 || sigaction(SIGUSR2, &sa, NULL) < 0)
+    {
+        write(1, "Error with SIGUSR signal!", 25);
         exit(EXIT_FAILURE);
     }
 	send_msg(server_pid, argv[2]);

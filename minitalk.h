@@ -6,7 +6,7 @@
 /*   By: trazanad <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/22 20:43:25 by trazanad          #+#    #+#             */
-/*   Updated: 2024/05/24 10:15:52 by trazanad         ###   ########.fr       */
+/*   Updated: 2024/05/25 21:41:11 by trazanad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,6 @@ void	ft_lstadd_back(t_list **lst, t_list *new);
 long	ft_atoi(const char *nptr);
 void	ft_putstr_fd(char *s, int fd);
 int	ft_count_len(char *s);
-
+void	ft_putnbr_fd(int n, int fd);
 
 #endif

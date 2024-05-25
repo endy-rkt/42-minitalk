@@ -6,7 +6,7 @@
 /*   By: trazanad <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/23 13:54:13 by trazanad          #+#    #+#             */
-/*   Updated: 2024/05/24 10:18:16 by trazanad         ###   ########.fr       */
+/*   Updated: 2024/05/25 21:38:18 by trazanad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,32 @@ int	ft_count_len(char *s)
 	while (s[len])
 		len++;
 	return (len);
+}
+
+void	ft_putnbr_fd(int n, int fd)
+{
+	char	c;
+
+	if (fd > -1)
+	{
+		if (n == -2147483648)
+			write(fd, "-2147483648", 11);
+		else if (n < 0)
+		{
+			write(fd, "-", 1);
+			ft_putnbr_fd(-n, fd);
+		}
+		else if (n > 9)
+		{
+			ft_putnbr_fd(n / 10, fd);
+			ft_putnbr_fd(n % 10, fd);
+		}
+		else
+		{
+			c = n + '0';
+			write(fd, &c, 1);
+		}
+	}
 }
 
 void	ft_putstr_fd(char *s, int fd)
