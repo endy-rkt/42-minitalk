@@ -6,13 +6,13 @@
 /*   By: trazanad <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/22 20:39:16 by trazanad          #+#    #+#             */
-/*   Updated: 2024/05/26 01:27:11 by trazanad         ###   ########.fr       */
+/*   Updated: 2024/05/26 22:51:31 by trazanad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
 
-void    send_signal(pid_t server_pid, int signum)
+static int    send_signal(pid_t server_pid, int signum)
 {
     int res;
 
@@ -26,49 +26,56 @@ void    send_signal(pid_t server_pid, int signum)
         write(1, "Error occured when sending signals!",35);
         exit(EXIT_FAILURE);
     }
+	return (res);
 }
 
-void	send_character(pid_t server_pid, char character)
+static void	send_character(pid_t server_pid, char character, struct sigaction sa)
 {
 	int i;
 	unsigned char tmp;
+	int res;
 
 	i = 8;
+	res = -1;
 	while(i > 0)
 	{
 		i--;
 		tmp = character >> i;
 		if (tmp % 2 == 0)
-			send_signal(server_pid, SIGUSR1);
+			res = send_signal(server_pid, SIGUSR1);
 		else
-			send_signal(server_pid, SIGUSR2);
+			res = send_signal(server_pid, SIGUSR2);
+		if (sigaction(SIGUSR1, &sa, NULL) < 0 || sigaction(SIGUSR2, &sa, NULL) < 0)
+    	{
+        	write(1, "Error with SIGUSR signal!", 25);
+        	exit(EXIT_FAILURE);
+    	}
 		pause();
-		usleep(100);
+		// usleep(100);
 	}
 }
 
-void	send_msg(pid_t server_pid, char *msg)
+static void	send_msg(pid_t server_pid, char *msg,struct sigaction sa)
 {
 	int i;
 
 	i = 0;
 	while (msg[i])
 	{
-		send_character(server_pid, msg[i]);
-		usleep(100);
+		send_character(server_pid, msg[i],sa);
 		i++;
 	}
-	send_character(server_pid, '\0');//msg end
+	send_character(server_pid, '\0',sa);
 }
 
-void handle_sigusr(int signum, siginfo_t *info, void *context)
+static void handle_sigusr(int signum, siginfo_t *info, void *context)
 {
+	int res =0;
 	(void)context;
-		if (signum ==  SIGUSR1 || signum == SIGUSR2)
-		{
-			ft_putnbr_fd(signum ,1);
-			write(1,"\n",1);
-		}
+		if (signum ==  SIGUSR1)
+			res = write(1,"0\n",3);
+		else if (signum == SIGUSR2)
+			res = write(1,"1\n",3);
 }
 
 int main(int argc, char *argv[])
@@ -90,11 +97,6 @@ int main(int argc, char *argv[])
 	sigemptyset(&sa.sa_mask);
 	sa.sa_flags = SA_SIGINFO;
 	sa.sa_sigaction = &handle_sigusr;
-    if (sigaction(SIGUSR1, &sa, NULL) < 0 || sigaction(SIGUSR2, &sa, NULL) < 0)
-    {
-        write(1, "Error with SIGUSR signal!", 25);
-        exit(EXIT_FAILURE);
-    }
-	send_msg(server_pid, argv[2]);
+	send_msg(server_pid, argv[2], sa);
 	return (0);
 }
