@@ -6,13 +6,15 @@
 /*   By: trazanad <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/22 20:50:20 by trazanad          #+#    #+#             */
-/*   Updated: 2024/05/26 22:55:02 by trazanad         ###   ########.fr       */
+/*   Updated: 2024/05/27 13:57:04 by trazanad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
 
-static void print(t_list *list)
+static t_list *list = 0;
+
+static int print_msg(t_list *list)
 {
     char c;
 
@@ -22,14 +24,13 @@ static void print(t_list *list)
         write(1,&c,1);
         list = list->next;
     }
-    ft_lstclear(&list);
+    return (1);
 }
 
 static int process_msg(int signum)
 {
 	static unsigned int i = 8;
 	static unsigned char character = 0;
-    static t_list *list = 0;
 	
 	if (i > 0)
 	{
@@ -41,7 +42,8 @@ static int process_msg(int signum)
 	{
         ft_lstadd_back(&list, ft_lstnew(character));
         if (character == 0)
-        print(list);
+        if (print_msg(list))
+            ft_lstclear(&list);
 		i = 8;
 		character = 0;
 	}
@@ -52,25 +54,27 @@ static void handle_sigusr(int signum, siginfo_t *info, void *context)
 {
 	int res;
 
-	res = 0;
+	res = -1;
     (void)context;
-    if (signum != SIGUSR1 && signum != SIGUSR2)
+    if (info->si_pid > 0)
     {
-        write (1, "Error invalid signal from client!", 33);
-        exit(EXIT_FAILURE);
+         if (signum != SIGUSR1 && signum != SIGUSR2)
+        {
+            write (1, "Error invalid signal from client!", 33);
+            ft_lstclear(&list);
+            exit(EXIT_FAILURE);
+        }
+        if (process_msg(signum))
+	        res = kill(info->si_pid, signum);
+        if (res < 0)
+        {
+            write(1, "Error occured when sending signals!",35);
+            ft_lstclear(&list);
+            exit(EXIT_FAILURE);
+        }
     }
-	if (process_msg(signum))
-	{
-		res = kill(info->si_pid, signum);
-		while (res < 0)
-		{
-			usleep(42);
-			res = kill(info->si_pid, signum);
-		}
-	}
 }
-
-//handle sa with 
+ 
 int main(int argc, char *argv[])
 {
 	pid_t pid;
@@ -86,7 +90,7 @@ int main(int argc, char *argv[])
 	ft_putnbr_fd(pid, 1);
 	ft_putstr_fd(" ...\n", 1);
 	sigemptyset(&sa.sa_mask);
-	sa.sa_flags = SA_SIGINFO;
+	sa.sa_flags = SA_RESTART | SA_SIGINFO;
 	sa.sa_sigaction = &handle_sigusr;
     if (sigaction(SIGUSR1, &sa, NULL) < 0 || sigaction(SIGUSR2, &sa, NULL) < 0)
     {
@@ -94,6 +98,6 @@ int main(int argc, char *argv[])
         exit(EXIT_FAILURE);
     }
 	while(1)
-	pause();
+    pause();
     return (0);
 }
