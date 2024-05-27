@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   client.c                                           :+:      :+:    :+:   */
+/*   client_bonus.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: trazanad <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/22 20:39:16 by trazanad          #+#    #+#             */
-/*   Updated: 2024/05/27 22:32:34 by trazanad         ###   ########.fr       */
+/*   Updated: 2024/05/27 22:39:17 by trazanad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,8 +67,16 @@ static void handle_sigusr(int signum, siginfo_t *info, void *context)
 {
 	(void)context;
 	if (info->si_pid > 0)
-        if (signum == SIGUSR1 || signum == SIGUSR2)
+    {
+		if (signum == SIGUSR1 || signum == SIGUSR2)
+		{
+			if (signum ==  SIGUSR1)
+		    	ft_putstr_fd("0\n", 1);
+	    	else if (signum == SIGUSR2)
+				ft_putstr_fd("1\n", 1);
 			handler_finished = 1;
+		}
+	}
 }
 
 int main(int argc, char *argv[])

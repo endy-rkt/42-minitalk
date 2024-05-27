@@ -6,7 +6,7 @@
 /*   By: trazanad <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 22:52:07 by trazanad          #+#    #+#             */
-/*   Updated: 2024/05/26 22:53:13 by trazanad         ###   ########.fr       */
+/*   Updated: 2024/05/27 22:14:10 by trazanad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,25 +54,22 @@ void	ft_putnbr_fd(int n, int fd)
 	}
 }
 
-long	ft_atoi(const char *nptr)
+long	ft_atoi_s(const char *nptr)
 {
 	int		i;
 	long	res;
-	int		neg;
 
 	res = 0;
 	i = 0;
-	neg = 1;
 	while ((nptr[i] >= '\t' && nptr[i] <= '\r') || nptr[i] == ' ')
-		i++;
-	if (nptr[i] == '-')
-		neg = -1;
-	if (nptr[i] == '-' || nptr[i] == '+')
 		i++;
 	while (nptr[i] > 47 && nptr[i] < 58)
 	{
 		res = res * 10 + (nptr[i] - 48);
 		i++;
 	}
-	return (res * neg);
+	if (nptr[i])
+		res = -1;
+	return (res);
 }
+
