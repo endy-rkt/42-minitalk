@@ -1,4 +1,3 @@
-
 CLIENT_SRCS = client.c  minitalk_utils_1.c
 
 SERVER_SRCS = server.c minitalk_utils_1.c minitalk_utils_2.c

@@ -6,17 +6,17 @@
 /*   By: trazanad <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/22 20:39:16 by trazanad          #+#    #+#             */
-/*   Updated: 2024/05/27 22:39:17 by trazanad         ###   ########.fr       */
+/*   Updated: 2024/06/02 19:20:12 by trazanad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
 
-static volatile sig_atomic_t handler_finished = 0;
+static volatile sig_atomic_t	handler_finished = 0;
 
-static void   send_signal(pid_t server_pid, int signum)
+static void	send_signal(pid_t server_pid, int signum)
 {
-    int res;
+    int	res;
 
     res = -1;
     if (signum == SIGUSR1)
@@ -32,8 +32,8 @@ static void   send_signal(pid_t server_pid, int signum)
 
 static void	send_character(pid_t server_pid, char character)
 {
-	int i;
-	unsigned char tmp;
+	int				i;
+	unsigned char	tmp;
 
 	i = 8;
 	while(i > 0)
@@ -52,7 +52,7 @@ static void	send_character(pid_t server_pid, char character)
 
 static void	send_msg(pid_t server_pid, char *msg)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (msg[i])
@@ -63,7 +63,7 @@ static void	send_msg(pid_t server_pid, char *msg)
 	send_character(server_pid, '\0');
 }
 
-static void handle_sigusr(int signum, siginfo_t *info, void *context)
+static void	handle_sigusr(int signum, siginfo_t *info, void *context)
 {
 	(void)context;
 	if (info->si_pid > 0)
@@ -79,11 +79,11 @@ static void handle_sigusr(int signum, siginfo_t *info, void *context)
 	}
 }
 
-int main(int argc, char *argv[])
+int	main(int argc, char *argv[])
 {
-	pid_t server_pid;
-	struct sigaction sa;
-	
+	pid_t				server_pid;
+	struct sigaction	sa;
+
 	if (argc != 3)
 	{
         ft_putstr_fd("Error invalid number of argument!", 2);

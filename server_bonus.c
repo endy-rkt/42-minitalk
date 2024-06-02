@@ -6,32 +6,32 @@
 /*   By: trazanad <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/22 20:50:20 by trazanad          #+#    #+#             */
-/*   Updated: 2024/05/27 22:39:22 by trazanad         ###   ########.fr       */
+/*   Updated: 2024/06/02 19:21:28 by trazanad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
 
-static t_list *list = 0;
+static t_list	*list = 0;
 
-static int print_msg(t_list *list)
+static int	print_msg(t_list *list)
 {
-    char c;
+    char	c;
 
     while (list)
     {
         c = list->content;
-        write(1,&c,1);
+        write(1, &c, 1);
         list = list->next;
     }
     return (1);
 }
 
-static int process_msg(int signum)
+static int	process_msg(int signum)
 {
-	static unsigned int i = 8;
-	static unsigned char character = 0;
-	
+	static	unsigned	int		i = 8;
+	static	unsigned	char	character = 0;
+
 	if (i > 0)
 	{
 		i--;
@@ -50,9 +50,9 @@ static int process_msg(int signum)
 	return (1);
 }
 
-static void handle_sigusr(int signum, siginfo_t *info, void *context)
+static void	handle_sigusr(int signum, siginfo_t *info, void *context)
 {
-	int res;
+	int	res;
 
 	res = -1;
     (void)context;
@@ -75,11 +75,11 @@ static void handle_sigusr(int signum, siginfo_t *info, void *context)
     }
 }
  
-int main(void)
+int	main(void)
 {
-	pid_t pid;
-	struct sigaction sa;
-	
+	pid_t				pid;
+	struct	sigaction	sa;
+
 	pid = getpid();
     if (pid < 0)
     {
