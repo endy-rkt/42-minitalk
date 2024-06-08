@@ -6,11 +6,13 @@
 /*   By: trazanad <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/22 20:43:25 by trazanad          #+#    #+#             */
-/*   Updated: 2024/06/02 19:11:57 by trazanad         ###   ########.fr       */
+/*   Updated: 2024/06/08 11:21:37 by trazanad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINITALK_H
+
+# define MINITALK_H
 
 # include <fcntl.h>
 
@@ -19,6 +21,7 @@
 # include <signal.h>
 
 # include <unistd.h>
+
 typedef struct s_list
 {
 	char			content;
